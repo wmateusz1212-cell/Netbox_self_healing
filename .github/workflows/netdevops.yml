@@ -19,5 +19,7 @@ jobs:
         run: curl -s http://localhost:8000/api/dcim/devices/ > /dev/null
 
       - name: Run Ansible Sync & Remediation
+        env:
+          ANSIBLE_SSH_PASS: ${{ secrets.ANSIBLE_SSH_PASS }}
         run: |
-          ansible-playbook -i /root/netbox-docker/netbox_inventory.sh /root/netbox-docker/deploy_lab.yml
+          ansible-playbook -i /root/netbox-docker/netbox_inventory.sh /root/netbox-docker/netdevops-lab/deploy_lab.yml

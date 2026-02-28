@@ -44,19 +44,19 @@
               - no event manager applet SAFEGUARD
           ignore_errors: yes
 
-        - name: "[3.2] Uzbrojenie Błyskawicznego Strażnika (Universal Syslog Trigger)"
+        - name: "[3.2] Uzbrojenie Dynamicznego Strażnika (Any Interface Recovery)"
           cisco.ios.ios_config:
             parents: event manager applet SAFEGUARD
             lines:
               - event syslog pattern "Interface .*, changed state to .*down"
-              - action 1.0 cli command "enable"
-              - action 2.0 cli command "configure terminal"
-              - action 3.0 cli command "interface {{ mgmt_interface }}"
-              - action 4.0 cli command "no shutdown"
-              - action 5.0 cli command "end"
-              - action 6.0 cli command "copy startup-config running-config"
+              - action 1.0 regexp "Interface ([^,]+)," "$_syslog_msg" match intf
+              - action 2.0 cli command "enable"
+              - action 3.0 cli command "configure terminal"
+              - action 4.0 cli command "interface $intf"
+              - action 5.0 cli command "no shutdown"
+              - action 6.0 cli command "end"
+              - action 7.0 cli command "copy startup-config running-config"
           register: eem_config
-          when: mgmt_interface is defined
 
         - name: "[4] Zapisywanie konfiguracji do Startup-Config"
           cisco.ios.ios_command:

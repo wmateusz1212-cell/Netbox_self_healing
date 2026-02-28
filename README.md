@@ -49,14 +49,19 @@ Integrated **Prometheus** and **SNMP Exporter** pull telemetry from Cisco device
 ### 4. Fail-Safe "Dead Man's Switch" (Cisco EEM)
 If connectivity to the automation server is lost for 60 seconds, the device autonomously triggers a **rollback to the last-known-good configuration** (`startup-config`), ensuring the infrastructure remains reachable for remediation.
 
+### 5. Cloud Infrastructure as Code (Terraform)
+The entire automation server, including Docker, NetBox, and the observability stack, can be spun up from scratch in the cloud (AWS) using the provided Terraform blueprints. This ensures the environment is fully disposable, scalable, and immutable.
+
 ---
 
 ## 🛠 Tech Stack
 *   **Networking:** Cisco IOS (CML-based Lab)
+*   **Cloud IaC:** Terraform (AWS EC2, Security Groups)
 *   **SSoT:** NetBox (Containerized)
 *   **Observability:** Prometheus, Grafana, SNMP Exporter
 *   **Orchestration:** Ansible (cisco.ios collection)
 *   **CI/CD:** GitHub Actions with Self-Hosted Runners
+
 
 ---
 

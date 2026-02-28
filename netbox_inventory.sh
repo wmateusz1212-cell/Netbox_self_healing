@@ -1,4 +1,5 @@
 #!/bin/bash
+# NetBox Dynamic Inventory Script with mgmt_interface support
 docker exec netbox-docker-netbox-1 /opt/netbox/netbox/manage.py shell -c "
 import json
 from dcim.models import Device
@@ -10,6 +11,15 @@ inventory = {
     'router': {'hosts': []},
     'switch': {'hosts': []},
     'ungrouped': {'hosts': []}
+}
+
+# Mapping management interfaces (can be also moved to NetBox custom fields later)
+mgmt_map = {
+    'R1': 'GigabitEthernet1',
+    'R2': 'GigabitEthernet1',
+    'SW1': 'Vlan1',
+    'SW2': 'Vlan1',
+    'SW3': 'Vlan1'
 }
 
 for d in Device.objects.all():
@@ -24,7 +34,8 @@ for d in Device.objects.all():
     inventory[role]['hosts'].append(name)
     inventory['_meta']['hostvars'][name] = {
         'ansible_host': ip,
-        'netbox_role': role
+        'netbox_role': role,
+        'mgmt_interface': mgmt_map.get(name, 'GigabitEthernet1')
     }
 
 json.dump(inventory, sys.stdout)

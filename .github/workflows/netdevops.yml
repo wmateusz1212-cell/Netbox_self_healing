@@ -1,0 +1,23 @@
+name: NetDevOps Lab Automation
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  drift-detection:
+    name: Network Drift Detection & Remediation
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Code
+        run: cd /root && git pull origin main
+
+      - name: Verify Netbox Connectivity
+        run: curl -s http://localhost:8000/api/dcim/devices/ > /dev/null
+
+      - name: Run Ansible Sync & Remediation
+        run: |
+          ansible-playbook -i /root/netbox-docker/netbox_inventory.sh /root/netbox-docker/deploy_lab.yml

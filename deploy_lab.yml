@@ -1,0 +1,56 @@
+---
+- name: Skonfiguruj i waliduj samonaprawiającą się sieć OSPF (NetDevOps)
+  hosts: all
+  gather_facts: no
+  connection: network_cli
+  vars:
+    # Możesz tu podać webhook z Discorda lub Slacka (np. https://discord.com/api/webhooks/...)
+    alert_webhook_url: "" 
+
+  tasks:
+    - name: Wymuś konfigurację SSH (starsze algorytmy)
+      cisco.ios.ios_config:
+        lines:
+          - ip ssh version 2
+          - ip ssh server algorithm encryption aes128-cbc 3des-cbc
+          - ip ssh server algorithm kex diffie-hellman-group1-sha1
+
+    - name: Konfiguracja OSPF - zapewnienie trasowania (Drift Detection)
+      cisco.ios.ios_ospfv2:
+        config:
+          processes:
+            - process_id: 1
+              areas:
+                - area_id: "0"
+        state: merged
+      register: ospf_config
+
+    - name: [ChatOps] Wyślij alert o naprawie konfiguracji
+      uri:
+        url: "{{ alert_webhook_url }}"
+        method: POST
+        body_format: json
+        headers:
+          Content-Type: "application/json"
+        body:
+          content: "⚠️ **Drift Detected & Remediated!**
+Na urządzeniu **{{ inventory_hostname }}** wykryto niezgodność konfiguracji OSPF ze Źródłem Prawdy (NetBox). Konfiguracja została automatycznie naprawiona przez Ansible."
+      when: 
+        - ospf_config.changed
+        - alert_webhook_url != ""
+      ignore_errors: yes
+
+    - name: Zapisz konfigurację (Running-config do Startup-config)
+      cisco.ios.ios_command:
+        commands: write memory
+      when: ospf_config.changed
+
+    - name: [Walidacja] Sprawdź relacje sąsiedztwa OSPF
+      cisco.ios.ios_command:
+        commands: show ip ospf neighbor
+      register: ospf_neighbors
+
+    - name: [Walidacja] Analiza wyniku OSPF
+      debug:
+        msg: "Sąsiedzi OSPF na {{ inventory_hostname }}:
+{{ ospf_neighbors.stdout[0] }}"

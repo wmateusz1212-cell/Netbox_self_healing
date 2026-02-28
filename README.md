@@ -1,67 +1,73 @@
-# 🌐 NetDevOps: Self-Healing Network Infrastructure & Source of Truth
+# 🌐 NetDevOps: Autonomous Self-Healing Network Infrastructure
 
 [![NetDevOps](https://img.shields.io/badge/Network-Automation-blue.svg)](https://github.com/wmateusz1212-cell/Netbox_self_healing)
 [![Ansible](https://img.shields.io/badge/Ansible-2.15+-red.svg)](https://www.ansible.com/)
 [![NetBox](https://img.shields.io/badge/Source%20of%20Truth-NetBox-green.svg)](https://netbox.dev/)
 [![CI/CD](https://img.shields.io/badge/Pipeline-GitHub%20Actions-black.svg)](https://github.com/features/actions)
 
-## 🚀 O Projekcie
-Ten projekt to zaawansowana demonstracja nowoczesnego podejścia **NetDevOps** do zarządzania infrastrukturą sieciową. Zamiast ręcznej konfiguracji przez CLI, sieć jest traktowana jak kod (**Infrastructure as Code**), a jej stan jest wymuszany przez zautomatyzowaną pętlę zwrotną (**Closed-Loop Automation**).
+## 🚀 Executive Summary
+This project showcases a production-grade **NetDevOps** ecosystem designed to eliminate manual configuration errors and guarantee 100% network consistency. By adopting an **Infrastructure as Code (IaC)** approach, the platform implements a **Closed-Loop Automation** cycle that autonomously detects, reports, and remediates unauthorized configuration changes (Configuration Drift) in real-time.
 
-Projekt rozwiązuje krytyczne problemy współczesnych działów IT:
-*   **Configuration Drift:** Automatyczne wykrywanie i naprawa ręcznych, nieudokumentowanych zmian.
-*   **Single Source of Truth:** NetBox jako jedyne, nadrzędne źródło wiedzy o sieci.
-*   **Human Error:** Mechanizm "Dead Man's Switch" chroniący przed odcięciem dostępu do urządzeń.
+Built with **NetBox** as the Single Source of Truth (SSoT) and **Ansible** as the orchestration engine, the system features a robust **Fail-Safe "Dead Man's Switch"** powered by Cisco EEM, ensuring the network remains resilient even under catastrophic management failures.
 
 ---
 
-## 🏗 Architektura Systemu
-1.  **Source of Truth (NetBox):** Przechowuje pożądany stan sieci (IP, role, urządzenia).
-2.  **Automation Engine (Ansible):** Dynamicznie generuje inwentarz z NetBoxa i wdraża konfigurację na urządzenia Cisco IOS.
-3.  **GitOps Workflow (GitHub Actions):** Każdy commit wyzwala pipeline sprawdzający spójność sieci.
-4.  **Local Runner:** Umożliwia bezpieczną komunikację między chmurą GitHub a fizycznym laboratorium.
+## 🏗 System Architecture
+The platform integrates four critical layers of modern infrastructure management:
+
+1.  **Source of Truth (NetBox):** The authoritative data store for all network intent (IP addressing, device roles, and site metadata).
+2.  **Automation Engine (Ansible):** Orchestrates idempotent state enforcement using custom dynamic inventory mapping.
+3.  **GitOps Pipeline (GitHub Actions):** Manages the full CI/CD lifecycle, triggering validation and deployment on every commit.
+4.  **Edge Intelligence (Cisco EEM):** On-box event-driven scripts providing a final layer of autonomous defense.
 
 ---
 
-## 🔥 Kluczowe Funkcjonalności
+## 🔥 Key Technical Capabilities
 
-### 1. Dynamic Inventory & Source of Truth
-System nie korzysta ze statycznych list hostów. Skrypt `netbox_inventory.sh` odpytuje API NetBoxa w czasie rzeczywistym, pobierając aktualne adresy IP i role urządzeń. Zmiana w NetBox = automatyczna aktualizacja w Ansible.
+### 1. Dynamic SSoT-Driven Inventory
+Gone are the fragile static host files. A Python-based **Dynamic Inventory** engine interfaces directly with the NetBox API to fetch real-time device states. 
+*   *Outcome:* Any change in NetBox intent is instantly reflected across the entire automation surface without manual code updates.
 
-### 2. Closed-Loop Automation (Samonaprawa)
-Playbook `deploy_lab.yml` monitoruje konfigurację OSPF. Jeśli inżynier wykona `no router ospf 1` poza systemem automatyzacji, Ansible wykryje zmianę (Drift Registration) i w ciągu minut **automatycznie przywróci trasowanie**.
+### 2. Autonomous Drift Remediation
+Leveraging Ansible's state-based logic, the system continuously monitors the running configuration of Cisco IOS devices.
+*   **Detection:** Instantly identifies unauthorized manual overrides (e.g., removal of OSPF processes).
+*   **Remediation:** Automatically re-provisions missing configuration blocks to align the physical state with the documented intent.
 
-### 3. Network Resiliency (Cisco EEM Safeguard)
-Wdrożony mechanizm **Dead Man's Switch** za pomocą Cisco Embedded Event Manager. Urządzenia co 5 minut pingują serwer Ansible. W przypadku utraty łączności (np. błąd w ACL lub OSPF), urządzenie samo przywraca ostatnią dobrą konfigurację z pamięci `startup-config`.
+### 3. Fail-Safe "Dead Man's Switch" (Cisco EEM)
+To mitigate the risk of accidental lockouts during automation, I engineered a **Cisco Embedded Event Manager (EEM)** safeguard:
+*   Devices perform continuous connectivity heartbeats to the Automation Server.
+*   If connectivity is lost for 60 seconds, the device autonomously triggers a **rollback to the last-known-good configuration** ().
+*   *Innovation:* This ensures the infrastructure remains "self-reachable," allowing Ansible to re-establish control and finish repairs.
 
-### 4. Post-Deployment Validation
-Pipeline nie kończy się na "ok". System wykonuje komendy operacyjne (np. `show ip ospf neighbor`), weryfikując, czy zmiany przyniosły zakładany skutek technologiczny.
-
----
-
-## 🛠 Stack Technologiczny
-*   **Infrastructure:** Cisco IOS (Routers & Switches)
-*   **SSoT:** NetBox (Dockerized)
-*   **Automation:** Ansible (cisco.ios collection)
-*   **CI/CD:** GitHub Actions
-*   **Language:** Python, Bash, YAML
-*   **Security:** GitHub Secrets (Environment Variable Injection)
+### 4. Continuous Validation & ChatOps
+Modern networking requires proof of operation. This pipeline includes **Post-Deployment Validation**:
+*   Verifies operational states (e.g., OSPF neighbor adjacencies) post-configuration.
+*   Provides real-time **ChatOps** alerts via Webhooks, keeping the engineering team informed of all autonomous remediation events.
 
 ---
 
-## 📖 Jak to działa? (The Workflow)
-1.  **Zdefiniuj:** Dodaj/zmień parametry urządzenia w NetBoxie.
-2.  **Commit:** Wyślij zmiany w playbookach do repozytorium.
-3.  **Verify:** GitHub Actions uruchamia pipeline na lokalnym runnerze.
-4.  **Enforce:** Ansible synchronizuje stan urządzeń z NetBoxem.
-5.  **Alert:** W przypadku wykrycia dryfu (ręcznych zmian), system naprawia sieć i (opcjonalnie) wysyła alert ChatOps.
+## 🛠 Tech Stack
+*   **Networking:** Cisco IOS (Multi-tier Routing & Switching)
+*   **SSoT:** NetBox (Containerized via Docker)
+*   **Orchestration:** Ansible (cisco.ios collection)
+*   **CI/CD:** GitHub Actions with Self-Hosted Runners
+*   **Scripting:** Python (API integration), Jinja2, Bash, Cisco EEM
 
 ---
 
-## 📈 Wartość Biznesowa
-*   **Redukcja Downtime:** Samonaprawa sieci skraca czas przestojów wywołanych błędami ludzkimi.
-*   **Zgodność (Compliance):** Gwarancja, że stan faktyczny sieci jest w 100% zgodny z dokumentacją w NetBoxie.
-*   **Skalowalność:** Możliwość zarządzania setkami urządzeń z jednego, scentralizowanego miejsca bez konieczności logowania się na każde z osobna.
+## 📖 The NetDevOps Lifecycle
+1.  **State Definition:** Update network intent within NetBox.
+2.  **Commit & Push:** Deploy automation logic or policy updates to Git.
+3.  **CI/CD Execution:** GitHub Actions initiates the pipeline on the local lab environment.
+4.  **Policy Enforcement:** Ansible synchronizes the live environment with the intended state.
+5.  **Validation:** The system confirms technology health and reports success/remediation.
 
 ---
-*Projekt przygotowany jako demonstracja umiejętności z zakresu Automatyzacji Sieci, DevOps oraz Inżynierii Infrastruktury.*
+
+## 📈 Strategic Value
+*   **Zero-Deviation Compliance:** Guarantees the live network is always a 1:1 reflection of documentation.
+*   **Extreme Resilience:** Minimizes MTTR (Mean Time to Recovery) through autonomous edge-based healing.
+*   **Scalable Operations:** Enables consistent management of complex environments through standardized, reusable code.
+
+---
+*Authored as a comprehensive demonstration of Advanced Network Automation and DevOps Engineering.*

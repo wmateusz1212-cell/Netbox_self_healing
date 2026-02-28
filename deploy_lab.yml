@@ -5,6 +5,7 @@
   connection: network_cli
   vars:
     alert_webhook_url: ""
+    ansible_server_ip: "192.168.1.127"
 
   tasks:
     - name: "Konfiguracja OSPF - zapewnienie trasowania (Drift Detection)"
@@ -16,6 +17,20 @@
                 - area_id: "0"
         state: merged
       register: ospf_config
+
+    - name: "Zabezpieczenie: Fail-Safe EEM (Dead Man's Switch)"
+      cisco.ios.ios_config:
+        lines:
+          - event manager applet ANSIBLE_SAFEGUARD
+          - event timer watchdog time 300
+          - action 1.0 cli command "enable"
+          - action 2.0 cli command "ping {{ ansible_server_ip }} repeat 2 timeout 1"
+          - action 3.0 regexp "!!" "$_cli_result"
+          - action 4.0 if $_regexp_result eq "0"
+          - action 5.0 syslog msg "CRITICAL: Connection to Ansible lost! Restoring config..."
+          - action 6.0 cli command "copy startup-config running-config"
+          - action 7.0 end
+      register: eem_config
 
     - name: "[ChatOps] Wyślij alert o naprawie konfiguracji"
       uri:
@@ -34,7 +49,7 @@
     - name: "Zapisz konfigurację (Running-config do Startup-config)"
       cisco.ios.ios_command:
         commands: write memory
-      when: ospf_config.changed
+      when: ospf_config.changed or eem_config.changed
 
     - name: "[Walidacja] Sprawdź relacje sąsiedztwa OSPF"
       cisco.ios.ios_command:

@@ -33,32 +33,23 @@
             state: merged
           register: ospf_config
 
-        - name: "[2.5] Aktywacja monitoringu (SNMP)"
-          cisco.ios.ios_config:
-            lines:
-              - snmp-server community public RO
-
-        - name: "[3.1] Usunięcie starych strażników"
+        - name: "[3.1] Usunięcie starego strażnika"
           cisco.ios.ios_config:
             lines:
               - no event manager applet SAFEGUARD
           ignore_errors: yes
 
-        - name: "[3.2] Uzbrojenie uniwersalnego strażnika (EEM Recovery)"
+        - name: "[3.2] Uzbrojenie Błyskawicznego Strażnika (Syslog Trigger)"
           cisco.ios.ios_config:
             parents: event manager applet SAFEGUARD
             lines:
-              - event timer watchdog time 60
+              - event syslog pattern "Interface {{ mgmt_interface }}, changed state to administratively down"
               - action 1.0 cli command "enable"
-              - action 2.0 cli command "ping {{ ansible_server_ip }} source {{ mgmt_interface }} repeat 2 timeout 1"
-              - action 3.0 regexp "!!" "$_cli_result"
-              - action 4.0 if $_regexp_result eq "0"
-              - action 5.0 cli command "configure terminal"
-              - action 6.0 cli command "interface {{ mgmt_interface }}"
-              - action 7.0 cli command "no shutdown"
-              - action 8.0 cli command "end"
-              - action 9.0 cli command "copy startup-config running-config"
-              - action 10.0 end
+              - action 2.0 cli command "configure terminal"
+              - action 3.0 cli command "interface {{ mgmt_interface }}"
+              - action 4.0 cli command "no shutdown"
+              - action 5.0 cli command "end"
+              - action 6.0 cli command "copy startup-config running-config"
           register: eem_config
           when: mgmt_interface is defined
 
@@ -79,7 +70,7 @@
       rescue:
         - name: "🚨 ALERT: Błąd krytyczny podczas wdrożenia"
           debug:
-            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. Lokalny EEM czuwa."
+            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. Sprawdź konfigurację ręcznie."
 
       always:
         - name: "[ChatOps] Powiadomienie o sukcesie (tylko przy zmianach)"

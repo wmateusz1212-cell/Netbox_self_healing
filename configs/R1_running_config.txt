@@ -1,3 +1,4 @@
+Current configuration : 6813 bytes
 version 17.3
 service timestamps debug datetime msec
 service timestamps log datetime msec
@@ -15,10 +16,398 @@ login on-success log
 subscriber templating
 multilink bundle-name authenticated
 crypto pki trustpoint SLA-TrustPoint
-enrollment pkcs12
-revocation-check crl
+ enrollment pkcs12
+ revocation-check crl
 crypto pki trustpoint TP-self-signed-93634505
-enrollment selfsigned
-subject-name cn=IOS-Self-Signed-Certificate-93634505
-revocation-check none
-rsakeypair TP-self-signed-93634505
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-93634505
+ revocation-check none
+ rsakeypair TP-self-signed-93634505
+crypto pki certificate chain SLA-TrustPoint
+ certificate ca 01
+  30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030 
+  32310E30 0C060355 040A1305 43697363 6F312030 1E060355 04031317 43697363 
+  6F204C69 63656E73 696E6720 526F6F74 20434130 1E170D31 33303533 30313934 
+  3834375A 170D3338 30353330 31393438 34375A30 32310E30 0C060355 040A1305 
+  43697363 6F312030 1E060355 04031317 43697363 6F204C69 63656E73 696E6720 
+  526F6F74 20434130 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 
+  82010A02 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D 
+  CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388 8A38E520 
+  1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3 700A8BF7 D8F256EE 
+  4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957 A2617DE7 104FDC5F EA2956AC 
+  7390A3EB 2B5436AD C847A2C5 DAB553EB 69A9A535 58E9F3E3 C0BD23CF 58BD7188 
+  68E69491 20F320E7 948E71D7 AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7 
+  C7479096 B4CB2D62 EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191 
+  C55F0D76 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44 
+  DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04 04030201 
+  06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D 0E041604 1449DC85 
+  4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06 092A8648 86F70D01 010B0500 
+  03820101 00507F24 D3932A66 86025D9F E838AE5C 6D4DF6B0 49631C78 240DA905 
+  604EDCDE FF4FED2B 77FC460E CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B 
+  D98987BF E40CBD9E 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8 
+  467A3DF4 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C 
+  7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49 1765308B 
+  5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229 C37C1E69 39F08678 
+  80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC 60E4616A B623CDBD 230E3AFB 
+  418616A9 4093E049 4D10AB75 27E86F73 932E35B5 8862FDAE 0275156F 719BB2F0 
+  D697DF7F 28
+  \tquit
+crypto pki certificate chain TP-self-signed-93634505
+ certificate self-signed 01
+  3082032C 30820214 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  2F312D30 2B060355 04031324 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 39333633 34353035 301E170D 32363032 32383133 31343530 
+  5A170D33 36303232 38313331 3435305A 302F312D 302B0603 55040313 24494F53 
+  2D53656C 662D5369 676E6564 2D436572 74696669 63617465 2D393336 33343530 
+  35308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 0A028201 
+  0100A9B9 2B93BA7D 64F1EDAC 27C24C3E E54D9038 FEEB325F 2A42E26D DB972A36 
+  914EA2A5 95CCF060 6F282A57 A0F32826 D1A08229 42838DC6 ACAB1AAB 350126E5 
+  FC83FDE9 99A68575 4BFA7386 6BD852C3 06563C3C 13345426 7D018BF5 FF0FF776 
+  4464FE3C 37B505E5 3439117B 45A30B47 008F1564 0F8EFB2B 3F7A74AA 966FE424 
+  B365EFF3 DC25D997 C7A96D91 10F91368 F0AB065F 2F19BE78 52689754 A637FDDA 
+  C0D246F2 3FF38CBA B063C42D 5D14613D 946C4143 BAF9FA40 6ACBEBF0 43603EB3 
+  6E655898 6542B63C BE5E9A93 C41396B8 BB9F3BDE 36C5799A 01B62B6D 21DF362C 
+  02EF0F5A 0D3D535C 052B4E85 58D89A6A 59CB7F72 08E55330 1CEFF5C8 2C3D547B 
+  248D0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603 
+  551D2304 18301680 14A23BA1 79646A29 58AADDF8 EE86A2CA 905909C4 8A301D06 
+  03551D0E 04160414 A23BA179 646A2958 AADDF8EE 86A2CA90 5909C48A 300D0609 
+  2A864886 F70D0101 05050003 82010100 0C995816 CD983DC4 6B7A1381 900C6B7D 
+  DCE72D16 F8C8D4F2 4491FA43 D56B21DD 991A264C B73E30E2 EF080B01 AE04FF05 
+  4B7BC5AD 3A7DC679 AE6D3543 9E340803 F9B74F1A 6000EA8A C20AC8C6 67A4C7B1 
+  2A3BEF0F 6B28AB44 73BE3697 97A05759 04FC483F F9C7A88C BCD64851 BE4BBC86 
+  4EE6C1C1 DBC1DDC1 D5DB850E 908C6B8D FE79776F 1D0A4312 1111DA33 7D1AB71E 
+  D6A44A26 81E7A055 06DD3E50 A30173A0 D54EC4FA 415FD9EB 44E0FF5D BCDACD26 
+  CD8B39C0 7CB8AE9F 1F47AD08 DD36B199 DCF83DE0 911A77D1 3916E050 3324086B 
+  D5729E4D 5CFB1B0B 9A3F689D 6E5CC21B 03E00408 82207C36 DCC47B87 859C4080 
+  30CD43A0 17B450EC 700BE42C 0C7EC6A8
+  \tquit
+license udi pid CSR1000V sn 926UAEIKAKD
+diagnostic bootup level minimal
+memory free low-watermark processor 71464
+file prompt quiet
+spanning-tree extend system-id
+username mwozniak privilege 15 secret 9 $9$dA0.pvnCHS69YE$7i1.n12dOJqgg.F9qWGogrk31n.VpUoZ/H6BumwCIQQ
+redundancy
+interface GigabitEthernet1
+ description TO_SW3
+ ip address 10.0.31.1 255.255.255.0
+ negotiation auto
+ no mop enabled
+ no mop sysid
+interface GigabitEthernet2
+ description TO_SW1
+ ip address 10.0.11.1 255.255.255.0
+ negotiation auto
+ no mop enabled
+ no mop sysid
+interface GigabitEthernet3
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+interface GigabitEthernet4
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+router ospf 1
+ network 10.0.11.0 0.0.0.255 area 0
+ network 10.0.31.0 0.0.0.255 area 0
+ip forward-protocol nd
+no ip http server
+ip http secure-server
+ip ssh version 2
+ip ssh server algorithm encryption aes128-cbc 3des-cbc aes192-cbc aes256-cbc
+control-plane
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+ stopbits 1
+line vty 0
+ login local
+ transport input ssh
+line vty 1
+ login local
+ length 0
+ transport input ssh
+line vty 2 4
+ login local
+ transport input ssh
+call-home
+ ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com
+ ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.
+ contact-email-addr sch-smart-licensing@cisco.com
+ profile \"CiscoTAC-1\"
+  active
+  destination transport-method http
+event manager applet ANSIBLE_SAFEGUARD
+ event timer watchdog time 60
+ action 1.0 cli command \"enable\"
+ action 2.0 cli command \"ping 192.168.1.127 repeat 2 timeout 1\"
+ action 3.0 regexp \"!!\" \"$_cli_result\"
+ action 4.0 if $_regexp_result eq \"0\"
+ action 6.0  cli command \"copy startup-config running-config\"
+ action 7.0 end
+end"
+        "Building configuration...",
+        "",
+        "Current configuration : 6813 bytes",
+        "!",
+        "! Last configuration change at 18:03:12 UTC Sat Feb 28 2026",
+        "!",
+        "version 17.3",
+        "service timestamps debug datetime msec",
+        "service timestamps log datetime msec",
+        "! Call-home is enabled by Smart-Licensing.",
+        "service call-home",
+        "platform qfp utilization monitor load 80",
+        "platform punt-keepalive disable-kernel-core",
+        "platform console serial",
+        "!",
+        "hostname R1",
+        "!",
+        "boot-start-marker",
+        "boot-end-marker",
+        "!",
+        "!",
+        "!",
+        "no aaa new-model",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "no ip domain lookup",
+        "ip domain name lab.local",
+        "!",
+        "!",
+        "!",
+        "login on-success log",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "subscriber templating",
+        "! ",
+        "! ",
+        "! ",
+        "! ",
+        "!",
+        "!",
+        "multilink bundle-name authenticated",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "crypto pki trustpoint SLA-TrustPoint",
+        " enrollment pkcs12",
+        " revocation-check crl",
+        "!",
+        "crypto pki trustpoint TP-self-signed-93634505",
+        " enrollment selfsigned",
+        " subject-name cn=IOS-Self-Signed-Certificate-93634505",
+        " revocation-check none",
+        " rsakeypair TP-self-signed-93634505",
+        "!",
+        "!",
+        "crypto pki certificate chain SLA-TrustPoint",
+        " certificate ca 01",
+        "  30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030 ",
+        "  32310E30 0C060355 040A1305 43697363 6F312030 1E060355 04031317 43697363 ",
+        "  6F204C69 63656E73 696E6720 526F6F74 20434130 1E170D31 33303533 30313934 ",
+        "  3834375A 170D3338 30353330 31393438 34375A30 32310E30 0C060355 040A1305 ",
+        "  43697363 6F312030 1E060355 04031317 43697363 6F204C69 63656E73 696E6720 ",
+        "  526F6F74 20434130 82012230 0D06092A 864886F7 0D010101 05000382 010F0030 ",
+        "  82010A02 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D ",
+        "  CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388 8A38E520 ",
+        "  1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3 700A8BF7 D8F256EE ",
+        "  4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957 A2617DE7 104FDC5F EA2956AC ",
+        "  7390A3EB 2B5436AD C847A2C5 DAB553EB 69A9A535 58E9F3E3 C0BD23CF 58BD7188 ",
+        "  68E69491 20F320E7 948E71D7 AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7 ",
+        "  C7479096 B4CB2D62 EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191 ",
+        "  C55F0D76 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44 ",
+        "  DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04 04030201 ",
+        "  06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D 0E041604 1449DC85 ",
+        "  4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06 092A8648 86F70D01 010B0500 ",
+        "  03820101 00507F24 D3932A66 86025D9F E838AE5C 6D4DF6B0 49631C78 240DA905 ",
+        "  604EDCDE FF4FED2B 77FC460E CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B ",
+        "  D98987BF E40CBD9E 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8 ",
+        "  467A3DF4 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C ",
+        "  7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49 1765308B ",
+        "  5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229 C37C1E69 39F08678 ",
+        "  80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC 60E4616A B623CDBD 230E3AFB ",
+        "  418616A9 4093E049 4D10AB75 27E86F73 932E35B5 8862FDAE 0275156F 719BB2F0 ",
+        "  D697DF7F 28",
+        "  \tquit",
+        "crypto pki certificate chain TP-self-signed-93634505",
+        " certificate self-signed 01",
+        "  3082032C 30820214 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 ",
+        "  2F312D30 2B060355 04031324 494F532D 53656C66 2D536967 6E65642D 43657274 ",
+        "  69666963 6174652D 39333633 34353035 301E170D 32363032 32383133 31343530 ",
+        "  5A170D33 36303232 38313331 3435305A 302F312D 302B0603 55040313 24494F53 ",
+        "  2D53656C 662D5369 676E6564 2D436572 74696669 63617465 2D393336 33343530 ",
+        "  35308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 0A028201 ",
+        "  0100A9B9 2B93BA7D 64F1EDAC 27C24C3E E54D9038 FEEB325F 2A42E26D DB972A36 ",
+        "  914EA2A5 95CCF060 6F282A57 A0F32826 D1A08229 42838DC6 ACAB1AAB 350126E5 ",
+        "  FC83FDE9 99A68575 4BFA7386 6BD852C3 06563C3C 13345426 7D018BF5 FF0FF776 ",
+        "  4464FE3C 37B505E5 3439117B 45A30B47 008F1564 0F8EFB2B 3F7A74AA 966FE424 ",
+        "  B365EFF3 DC25D997 C7A96D91 10F91368 F0AB065F 2F19BE78 52689754 A637FDDA ",
+        "  C0D246F2 3FF38CBA B063C42D 5D14613D 946C4143 BAF9FA40 6ACBEBF0 43603EB3 ",
+        "  6E655898 6542B63C BE5E9A93 C41396B8 BB9F3BDE 36C5799A 01B62B6D 21DF362C ",
+        "  02EF0F5A 0D3D535C 052B4E85 58D89A6A 59CB7F72 08E55330 1CEFF5C8 2C3D547B ",
+        "  248D0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603 ",
+        "  551D2304 18301680 14A23BA1 79646A29 58AADDF8 EE86A2CA 905909C4 8A301D06 ",
+        "  03551D0E 04160414 A23BA179 646A2958 AADDF8EE 86A2CA90 5909C48A 300D0609 ",
+        "  2A864886 F70D0101 05050003 82010100 0C995816 CD983DC4 6B7A1381 900C6B7D ",
+        "  DCE72D16 F8C8D4F2 4491FA43 D56B21DD 991A264C B73E30E2 EF080B01 AE04FF05 ",
+        "  4B7BC5AD 3A7DC679 AE6D3543 9E340803 F9B74F1A 6000EA8A C20AC8C6 67A4C7B1 ",
+        "  2A3BEF0F 6B28AB44 73BE3697 97A05759 04FC483F F9C7A88C BCD64851 BE4BBC86 ",
+        "  4EE6C1C1 DBC1DDC1 D5DB850E 908C6B8D FE79776F 1D0A4312 1111DA33 7D1AB71E ",
+        "  D6A44A26 81E7A055 06DD3E50 A30173A0 D54EC4FA 415FD9EB 44E0FF5D BCDACD26 ",
+        "  CD8B39C0 7CB8AE9F 1F47AD08 DD36B199 DCF83DE0 911A77D1 3916E050 3324086B ",
+        "  D5729E4D 5CFB1B0B 9A3F689D 6E5CC21B 03E00408 82207C36 DCC47B87 859C4080 ",
+        "  30CD43A0 17B450EC 700BE42C 0C7EC6A8",
+        "  \tquit",
+        "!",
+        "license udi pid CSR1000V sn 926UAEIKAKD",
+        "diagnostic bootup level minimal",
+        "memory free low-watermark processor 71464",
+        "file prompt quiet",
+        "!",
+        "!",
+        "spanning-tree extend system-id",
+        "!",
+        "username mwozniak privilege 15 secret 9 $9$dA0.pvnCHS69YE$7i1.n12dOJqgg.F9qWGogrk31n.VpUoZ/H6BumwCIQQ",
+        "!",
+        "redundancy",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "! ",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "! ",
+        "! ",
+        "!",
+        "!",
+        "interface GigabitEthernet1",
+        " description TO_SW3",
+        " ip address 10.0.31.1 255.255.255.0",
+        " negotiation auto",
+        " no mop enabled",
+        " no mop sysid",
+        "!",
+        "interface GigabitEthernet2",
+        " description TO_SW1",
+        " ip address 10.0.11.1 255.255.255.0",
+        " negotiation auto",
+        " no mop enabled",
+        " no mop sysid",
+        "!",
+        "interface GigabitEthernet3",
+        " no ip address",
+        " shutdown",
+        " negotiation auto",
+        " no mop enabled",
+        " no mop sysid",
+        "!",
+        "interface GigabitEthernet4",
+        " no ip address",
+        " shutdown",
+        " negotiation auto",
+        " no mop enabled",
+        " no mop sysid",
+        "!",
+        "router ospf 1",
+        " network 10.0.11.0 0.0.0.255 area 0",
+        " network 10.0.31.0 0.0.0.255 area 0",
+        "!",
+        "ip forward-protocol nd",
+        "no ip http server",
+        "ip http secure-server",
+        "!",
+        "ip ssh version 2",
+        "ip ssh server algorithm encryption aes128-cbc 3des-cbc aes192-cbc aes256-cbc",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "control-plane",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "!",
+        "line con 0",
+        " exec-timeout 0 0",
+        " logging synchronous",
+        " stopbits 1",
+        "line vty 0",
+        " login local",
+        " transport input ssh",
+        "line vty 1",
+        " login local",
+        " length 0",
+        " transport input ssh",
+        "line vty 2 4",
+        " login local",
+        " transport input ssh",
+        "!",
+        "call-home",
+        " ! If contact email address in call-home is configured as sch-smart-licensing@cisco.com",
+        " ! the email address configured in Cisco Smart License Portal will be used as contact email address to send SCH notifications.",
+        " contact-email-addr sch-smart-licensing@cisco.com",
+        " profile \"CiscoTAC-1\"",
+        "  active",
+        "  destination transport-method http",
+        "!",
+        "!",
+        "!",
+        "!",
+        "event manager applet ANSIBLE_SAFEGUARD",
+        " event timer watchdog time 60",
+        " action 1.0 cli command \"enable\"",
+        " action 2.0 cli command \"ping 192.168.1.127 repeat 2 timeout 1\"",
+        " action 3.0 regexp \"!!\" \"$_cli_result\"",
+        " action 4.0 if $_regexp_result eq \"0\"",
+        " action 6.0  cli command \"copy startup-config running-config\"",
+        " action 7.0 end",
+        "!",
+        "end"

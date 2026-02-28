@@ -9,6 +9,8 @@
 This project showcases a production-grade **NetDevOps** ecosystem designed to eliminate manual configuration errors and guarantee 100% network consistency. By adopting an **Infrastructure as Code (IaC)** approach, the platform implements a **Closed-Loop Automation** cycle that autonomously detects, reports, and remediates unauthorized configuration changes (Configuration Drift) in real-time.
 
 Built with **NetBox** as the Single Source of Truth (SSoT) and **Ansible** as the orchestration engine, the system features a robust **Fail-Safe "Dead Man's Switch"** powered by Cisco EEM, ensuring the network remains resilient even under catastrophic management failures.
+<img width="1470" height="123" alt="image" src="https://github.com/user-attachments/assets/a43be603-848f-406b-a8ea-447c2371036b" />
+
 
 ---
 

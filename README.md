@@ -46,8 +46,11 @@ The system continuously monitors the running configuration. It instantly identif
 ### 3. Network Observability (New!)
 Integrated **Prometheus** and **SNMP Exporter** pull telemetry from Cisco devices every 15 seconds. **Grafana** visualizes this data, allowing for instant detection of performance bottlenecks or link failures.
 
-### 4. Fail-Safe "Dead Man's Switch" (Cisco EEM)
-If connectivity to the automation server is lost for 60 seconds, the device autonomously triggers a **rollback to the last-known-good configuration** (`startup-config`), ensuring the infrastructure remains reachable for remediation.
+### 4. Real-Time Fail-Safe (Cisco EEM Syslog Trigger)
+To prevent management lockouts and ensure high availability, I engineered an **Instant-Recovery mechanism** using Cisco EEM:
+*   **Event:** The device monitors its own internal Syslog for "administratively down" states on critical management interfaces.
+*   **Action:** Upon detection, the device autonomously executes a `no shutdown` and restores the `startup-config` within milliseconds.
+*   **Outcome:** This provides near-instant self-healing that is faster and more reliable than traditional polling methods.
 
 ### 5. Cloud Infrastructure as Code (Terraform)
 The entire automation server, including Docker, NetBox, and the observability stack, can be spun up from scratch in the cloud (AWS) using the provided Terraform blueprints. This ensures the environment is fully disposable, scalable, and immutable.

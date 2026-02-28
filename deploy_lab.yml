@@ -38,26 +38,30 @@
             lines:
               - snmp-server community public RO
 
-        - name: "[3.1] Konfiguracja IP SLA i Object Tracking (The Monitor)"
+        - name: "[3.1] Konfiguracja IP SLA (The Monitor)"
           cisco.ios.ios_config:
+            parents: ip sla 10
             lines:
-              - ip sla 10
               - icmp-echo {{ ansible_server_ip }} source-interface {{ mgmt_interface }}
               - threshold 2000
               - timeout 2000
               - frequency 5
-              - exit
+          when: mgmt_interface is defined
+
+        - name: "[3.2] Harmonogram IP SLA i Object Tracking"
+          cisco.ios.ios_config:
+            lines:
               - ip sla schedule 10 life forever start-time now
               - track 10 ip sla 10 state
           when: mgmt_interface is defined
 
-        - name: "[3.2] Uzbrojenie inteligentnego strażnika (The Responder)"
+        - name: "[3.3] Uzbrojenie inteligentnego strażnika (The Responder)"
           cisco.ios.ios_config:
             lines:
               - no event manager applet ANSIBLE_SAFEGUARD
               - event manager applet ANSIBLE_SAFEGUARD
               - event track 10 state down
-              - action 1.0 syslog msg "🚨 CONNECTION LOST! Forcing {{ mgmt_interface }} UP and restoring config..."
+              - action 1.0 syslog msg "ALARM_CONNECTION_LOST_FORCING_UP"
               - action 2.0 cli command "enable"
               - action 3.0 cli command "configure terminal"
               - action 4.0 cli command "interface {{ mgmt_interface }}"
@@ -84,7 +88,7 @@
       rescue:
         - name: "🚨 ALERT: Błąd krytyczny podczas wdrożenia"
           debug:
-            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. System Object Tracking + EEM przejmuje stery."
+            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. System EEM/Tracking czuwa nad łącznością."
 
       always:
         - name: "[ChatOps] Powiadomienie o sukcesie (tylko przy zmianach)"

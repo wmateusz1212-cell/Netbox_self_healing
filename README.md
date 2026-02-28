@@ -46,11 +46,12 @@ The system continuously monitors the running configuration. It instantly identif
 ### 3. Network Observability (New!)
 Integrated **Prometheus** and **SNMP Exporter** pull telemetry from Cisco devices every 15 seconds. **Grafana** visualizes this data, allowing for instant detection of performance bottlenecks or link failures.
 
-### 4. Real-Time Fail-Safe (Cisco EEM Syslog Trigger)
-To prevent management lockouts and ensure high availability, I engineered an **Instant-Recovery mechanism** using Cisco EEM:
-*   **Event:** The device monitors its own internal Syslog for "administratively down" states on critical management interfaces.
-*   **Action:** Upon detection, the device autonomously executes a `no shutdown` and restores the `startup-config` within milliseconds.
-*   **Outcome:** This provides near-instant self-healing that is faster and more reliable than traditional polling methods.
+### 4. Dynamic Real-Time Fail-Safe (Cisco EEM with Regex Parsing)
+To eliminate management lockouts and prevent unauthorized port shutdowns, I engineered a **Dynamic Instant-Recovery mechanism** using Cisco EEM:
+*   **Intelligence:** The device monitors its internal Syslog for any interface state change to "administratively down".
+*   **Regex Extraction:** A custom regular expression `Interface ([^,]+),` dynamically extracts the exact interface name (e.g., `GigabitEthernet0/1`, `Vlan1`) directly from the triggered Syslog message.
+*   **Autonomous Remediation:** Within milliseconds, the device executes a `no shutdown` on the *specific* affected interface and restores the configuration state.
+*   **Outcome:** This provides a truly universal, zero-polling self-healing capability that scales across routers and switches without hardcoded interface mappings.
 
 ### 5. Cloud Infrastructure as Code (Terraform)
 The entire automation server, including Docker, NetBox, and the observability stack, can be spun up from scratch in the cloud (AWS) using the provided Terraform blueprints. This ensures the environment is fully disposable, scalable, and immutable.

@@ -15,6 +15,13 @@
             lines:
               - file prompt quiet
 
+        - name: "[1.5] Enforce Physical Interface States (no shutdown)"
+          cisco.ios.ios_interfaces:
+            config:
+              - name: GigabitEthernet1
+                enabled: true
+            state: merged
+
         - name: "[2] Konfiguracja OSPF (Źródło Prawdy: NetBox)"
           cisco.ios.ios_ospfv2:
             config:

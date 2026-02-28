@@ -41,27 +41,24 @@
         - name: "[3.1] Usunięcie starych strażników"
           cisco.ios.ios_config:
             lines:
-              - no event manager applet ANSIBLE_SAFEGUARD
-              - no ip sla 10
-              - no track 10
+              - no event manager applet SAFEGUARD
           ignore_errors: yes
 
-        - name: "[3.2] Uzbrojenie uniwersalnego strażnika (EEM Timer)"
+        - name: "[3.2] Uzbrojenie uniwersalnego strażnika (EEM Recovery)"
           cisco.ios.ios_config:
-            parents: event manager applet ANSIBLE_SAFEGUARD
+            parents: event manager applet SAFEGUARD
             lines:
               - event timer watchdog time 60
               - action 1.0 cli command "enable"
               - action 2.0 cli command "ping {{ ansible_server_ip }} source {{ mgmt_interface }} repeat 2 timeout 1"
               - action 3.0 regexp "!!" "$_cli_result"
               - action 4.0 if $_regexp_result eq "0"
-              - action 5.0 syslog msg "🚨 CONNECTION LOST! Forcing {{ mgmt_interface }} UP..."
-              - action 6.0 cli command "configure terminal"
-              - action 7.0 cli command "interface {{ mgmt_interface }}"
-              - action 8.0 cli command "no shutdown"
-              - action 9.0 cli command "end"
-              - action 10.0 cli command "copy startup-config running-config"
-              - action 11.0 end
+              - action 5.0 cli command "configure terminal"
+              - action 6.0 cli command "interface {{ mgmt_interface }}"
+              - action 7.0 cli command "no shutdown"
+              - action 8.0 cli command "end"
+              - action 9.0 cli command "copy startup-config running-config"
+              - action 10.0 end
           register: eem_config
           when: mgmt_interface is defined
 
@@ -82,7 +79,7 @@
       rescue:
         - name: "🚨 ALERT: Błąd krytyczny podczas wdrożenia"
           debug:
-            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. Lokalny EEM czuwa nad łącznością."
+            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. Lokalny EEM czuwa."
 
       always:
         - name: "[ChatOps] Powiadomienie o sukcesie (tylko przy zmianach)"

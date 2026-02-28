@@ -1,0 +1,231 @@
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+hostname SW3
+boot-start-marker
+boot-end-marker
+username mwozniak privilege 15 secret 5 $1$dOjW$q.A2jmmYRBPzP.ux4Rt8k1
+no aaa new-model
+no process cpu extended history
+no process cpu autoprofile hog
+no ip domain-lookup
+ip domain-name lab.local
+ip cef
+no ipv6 cef
+file prompt quiet
+spanning-tree mode pvst
+spanning-tree extend system-id
+no cdp run
+interface GigabitEthernet0/0
+description CONNECT_TO_HOME_NET
+no switchport
+ip address 192.168.1.127 255.255.255.0
+negotiation auto
+no cdp enable
+interface GigabitEthernet0/1
+negotiation auto
+no cdp enable
+interface GigabitEthernet0/2
+negotiation auto
+no cdp enable
+interface GigabitEthernet0/3
+negotiation auto
+no cdp enable
+interface Vlan1
+ip address 10.0.31.10 255.255.255.0
+router ospf 1
+network 10.0.31.0 0.0.0.255 area 0
+network 192.168.1.0 0.0.0.255 area 0
+ip forward-protocol nd
+ip http server
+ip http secure-server
+ip ssh version 2
+ip ssh server algorithm encryption aes128-cbc 3des-cbc
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+no service-routing capabilities-manager
+control-plane
+banner exec ^C
+IOSv - Cisco Systems Confidential -
+Supplemental End User License Restrictions
+This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.
+By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.
+^C
+banner incoming ^C
+IOSv - Cisco Systems Confidential -
+Supplemental End User License Restrictions
+This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.
+By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.
+^C
+banner login ^C
+IOSv - Cisco Systems Confidential -
+Supplemental End User License Restrictions
+This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.
+By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.
+^C
+line con 0
+exec-timeout 0 0
+logging synchronous
+line aux 0
+line vty 0 4
+login local
+transport input ssh
+event manager applet ANSIBLE_SAFEGUARD
+event timer watchdog time 60
+action 1.0 cli command \"enable\"
+action 2.0 cli command \"ping 192.168.1.127 repeat 2 timeout 1\"
+action 3.0 regexp \"!!\" \"$_cli_result\"
+action 4.0 if $_regexp_result eq \"0\"
+action 6.0  cli command \"copy startup-config running-config\"
+action 7.0 end
+end"
+],
+"stdout_lines": [
+[
+"",
+"!",
+"!",
+"version 15.2",
+"service timestamps debug datetime msec",
+"service timestamps log datetime msec",
+"no service password-encryption",
+"service compress-config",
+"!",
+"hostname SW3",
+"!",
+"boot-start-marker",
+"boot-end-marker",
+"!",
+"!",
+"!",
+"username mwozniak privilege 15 secret 5 $1$dOjW$q.A2jmmYRBPzP.ux4Rt8k1",
+"no aaa new-model",
+"no process cpu extended history",
+"no process cpu autoprofile hog",
+"!",
+"!",
+"!",
+"!",
+"!",
+"!",
+"!",
+"!",
+"no ip domain-lookup",
+"ip domain-name lab.local",
+"ip cef",
+"no ipv6 cef",
+"!",
+"!",
+"file prompt quiet",
+"!",
+"spanning-tree mode pvst",
+"spanning-tree extend system-id",
+"!",
+"no cdp run",
+"!",
+"! ",
+"!",
+"!",
+"!",
+"!",
+"!",
+"!",
+"!",
+"!",
+"!",
+"!",
+"!",
+"!",
+"interface GigabitEthernet0/0",
+" description CONNECT_TO_HOME_NET",
+" no switchport",
+" ip address 192.168.1.127 255.255.255.0",
+" negotiation auto",
+" no cdp enable",
+"!",
+"interface GigabitEthernet0/1",
+" negotiation auto",
+" no cdp enable",
+"!",
+"interface GigabitEthernet0/2",
+" negotiation auto",
+" no cdp enable",
+"!",
+"interface GigabitEthernet0/3",
+" negotiation auto",
+" no cdp enable",
+"!",
+"interface Vlan1",
+" ip address 10.0.31.10 255.255.255.0",
+"!",
+"router ospf 1",
+" network 10.0.31.0 0.0.0.255 area 0",
+" network 192.168.1.0 0.0.0.255 area 0",
+"!",
+"ip forward-protocol nd",
+"!",
+"ip http server",
+"ip http secure-server",
+"!",
+"ip ssh version 2",
+"ip ssh server algorithm encryption aes128-cbc 3des-cbc",
+"ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr",
+"!",
+"!",
+"no service-routing capabilities-manager",
+"!",
+"!",
+"!",
+"!",
+"control-plane",
+"!",
+"banner exec ^C",
+"IOSv - Cisco Systems Confidential -",
+"",
+"Supplemental End User License Restrictions",
+"",
+"This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.",
+"",
+"By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.",
+"^C",
+"banner incoming ^C",
+"IOSv - Cisco Systems Confidential -",
+"",
+"Supplemental End User License Restrictions",
+"",
+"This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.",
+"",
+"By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.",
+"^C",
+"banner login ^C",
+"IOSv - Cisco Systems Confidential -",
+"",
+"Supplemental End User License Restrictions",
+"",
+"This IOSv software is provided AS-IS without warranty of any kind. Under no circumstances may this software be used separate from the Cisco Modeling Labs Software that this software was provided with, or deployed or used as part of a production environment.",
+"",
+"By using the software, you agree to abide by the terms and conditions of the Cisco End User License Agreement at http://www.cisco.com/go/eula. Unauthorized use or distribution of this software is expressly prohibited.",
+"^C",
+"!",
+"line con 0",
+" exec-timeout 0 0",
+" logging synchronous",
+"line aux 0",
+"line vty 0 4",
+" login local",
+" transport input ssh",
+"!",
+"event manager applet ANSIBLE_SAFEGUARD",
+" event timer watchdog time 60",
+" action 1.0 cli command \"enable\"",
+" action 2.0 cli command \"ping 192.168.1.127 repeat 2 timeout 1\"",
+" action 3.0 regexp \"!!\" \"$_cli_result\"",
+" action 4.0 if $_regexp_result eq \"0\"",
+" action 6.0  cli command \"copy startup-config running-config\"",
+" action 7.0 end",
+"!",
+"end"
+]
+]
+}

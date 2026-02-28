@@ -23,7 +23,7 @@ The platform integrates five critical layers of modern infrastructure management
 ---
 
 ## 📸 Proof of Concept (Lab Preview)
-*Below are real-world captures from the running environment. Replace placeholders with your actual screenshots.*
+*Below are real-world captures from the running environment.*
 
 ### 🛠 Network Topology (Cisco CML)
 ![Network Topology](images/topology.png)

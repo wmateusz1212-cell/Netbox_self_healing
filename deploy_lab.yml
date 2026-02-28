@@ -82,6 +82,6 @@
             body:
               content: "✅ **Auto-Healed!**\nSieć na **{{ inventory_hostname }}** została automatycznie naprawiona i zwalidowana."
           when: 
-            - ospf_config.changed
+            - ospf_config is defined and ospf_config.changed
             - alert_webhook_url != ""
           ignore_errors: yes

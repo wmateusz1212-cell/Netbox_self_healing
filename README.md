@@ -54,6 +54,18 @@ The entire automation server, including Docker, NetBox, and the observability st
 
 ---
 
+## 🛡️ Disaster Recovery & Business Continuity
+This project is built with high availability and rapid recovery in mind. In the event of a catastrophic failure or total data loss:
+1.  **Infrastructure Recovery:** Use `terraform apply` to provision a new server and network environment.
+2.  **Application Stack:** Docker Compose automatically rebuilds the NetBox and Monitoring containers.
+3.  **Data Rehydration:** Execute the custom recovery script:
+    ```bash
+    ./scripts/rehydrate_netbox.sh
+    ```
+    *Impact:* This restores the entire laboratory environment (Sites, Devices, IPs, and Roles) into the clean database within seconds, instantly re-enabling the Ansible automation engine.
+
+---
+
 ## 🛠 Tech Stack
 *   **Networking:** Cisco IOS (CML-based Lab)
 *   **Cloud IaC:** Terraform (AWS EC2, Security Groups)

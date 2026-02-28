@@ -18,9 +18,10 @@
         - name: "[1.5] Enforce Physical Interface States (no shutdown)"
           cisco.ios.ios_interfaces:
             config:
-              - name: GigabitEthernet1
+              - name: "{{ mgmt_interface }}"
                 enabled: true
             state: merged
+          when: mgmt_interface is defined
 
         - name: "[2] Konfiguracja OSPF (Źródło Prawdy: NetBox)"
           cisco.ios.ios_ospfv2:
@@ -52,19 +53,20 @@
               - action 2.0 cli command "ping {{ ansible_server_ip }} repeat 2 timeout 1"
               - action 3.0 regexp "!!" "$_cli_result"
               - action 4.0 if $_regexp_result eq "0"
-              - action 5.0 syslog msg "🚨 CONNECTION LOST! Forcing Gi1 interface UP..."
+              - action 5.0 syslog msg "ALARM_CONNECTION_LOST_RESTORE_INITIATED"
               - action 6.0 cli command "configure terminal"
-              - action 7.0 cli command "interface GigabitEthernet1"
+              - action 7.0 cli command "interface {{ mgmt_interface }}"
               - action 8.0 cli command "no shutdown"
               - action 9.0 cli command "end"
               - action 10.0 cli command "copy startup-config running-config"
               - action 11.0 end
           register: eem_config
+          when: mgmt_interface is defined
 
         - name: "[4] Zapisywanie konfiguracji do Startup-Config"
           cisco.ios.ios_command:
             commands: write memory
-          when: ospf_config.changed or eem_config.changed
+          when: (ospf_config.changed | default(false)) or (eem_config.changed | default(false))
 
         - name: "[5] Walidacja: Sprawdzenie stanu sąsiedztwa OSPF"
           cisco.ios.ios_command:
@@ -78,19 +80,7 @@
       rescue:
         - name: "🚨 ALERT: Błąd krytyczny podczas wdrożenia"
           debug:
-            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. System EEM na urządzeniu wymusi 'no shut' na Gi1 w ciągu 60 sekund."
-
-        - name: "[ChatOps] Wyślij powiadomienie o awarii pipeline"
-          uri:
-            url: "{{ alert_webhook_url }}"
-            method: POST
-            body_format: json
-            headers:
-              Content-Type: "application/json"
-            body:
-              content: "❌ **Deployment Failed!**\nBłąd wdrożenia na **{{ inventory_hostname }}**. Inicjowanie procedury automatycznego odzyskiwania interfejsu (EEM)..."
-          when: alert_webhook_url != ""
-          ignore_errors: yes
+            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. Inicjowanie procedury EEM..."
 
       always:
         - name: "[ChatOps] Powiadomienie o sukcesie (tylko przy zmianach)"

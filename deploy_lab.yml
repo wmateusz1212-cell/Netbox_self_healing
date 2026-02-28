@@ -48,7 +48,7 @@
           cisco.ios.ios_config:
             parents: event manager applet SAFEGUARD
             lines:
-              - event syslog pattern "Interface {{ mgmt_interface }}, changed state to .*down"
+              - event syslog pattern "Interface .*, changed state to .*down"
               - action 1.0 cli command "enable"
               - action 2.0 cli command "configure terminal"
               - action 3.0 cli command "interface {{ mgmt_interface }}"

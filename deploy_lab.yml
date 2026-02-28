@@ -43,7 +43,7 @@
               - no event manager applet ANSIBLE_SAFEGUARD
           ignore_errors: yes
 
-        - name: "[3.2] Uzbrojenie inteligentnego strażnika (Fail-Safe EEM)"
+        - name: "[3.2] Uzbrojenie kuloodpornego strażnika (EEM Recovery)"
           cisco.ios.ios_config:
             parents: event manager applet ANSIBLE_SAFEGUARD
             lines:
@@ -52,9 +52,13 @@
               - action 2.0 cli command "ping {{ ansible_server_ip }} repeat 2 timeout 1"
               - action 3.0 regexp "!!" "$_cli_result"
               - action 4.0 if $_regexp_result eq "0"
-              - action 5.0 syslog msg "🚨 CRITICAL: Connection to Ansible lost! Auto-restoring config..."
-              - action 6.0 cli command "copy startup-config running-config"
-              - action 7.0 end
+              - action 5.0 syslog msg "🚨 CONNECTION LOST! Forcing Gi1 interface UP..."
+              - action 6.0 cli command "configure terminal"
+              - action 7.0 cli command "interface GigabitEthernet1"
+              - action 8.0 cli command "no shutdown"
+              - action 9.0 cli command "end"
+              - action 10.0 cli command "copy startup-config running-config"
+              - action 11.0 end
           register: eem_config
 
         - name: "[4] Zapisywanie konfiguracji do Startup-Config"
@@ -74,7 +78,7 @@
       rescue:
         - name: "🚨 ALERT: Błąd krytyczny podczas wdrożenia"
           debug:
-            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. System EEM na urządzeniu spróbuje przywrócić łączność w ciągu 60 sekund."
+            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. System EEM na urządzeniu wymusi 'no shut' na Gi1 w ciągu 60 sekund."
 
         - name: "[ChatOps] Wyślij powiadomienie o awarii pipeline"
           uri:
@@ -84,7 +88,7 @@
             headers:
               Content-Type: "application/json"
             body:
-              content: "❌ **Deployment Failed!**\nBłąd wdrożenia na **{{ inventory_hostname }}**. Inicjowanie procedury automatycznego odzyskiwania (EEM)..."
+              content: "❌ **Deployment Failed!**\nBłąd wdrożenia na **{{ inventory_hostname }}**. Inicjowanie procedury automatycznego odzyskiwania interfejsu (EEM)..."
           when: alert_webhook_url != ""
           ignore_errors: yes
 

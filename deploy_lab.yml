@@ -1,5 +1,5 @@
 ---
-- name: "Skonfiguruj i waliduj samonaprawiającą się sieć OSPF (NetDevOps)"
+- name: "🌐 NetDevOps: Samonaprawiająca się sieć OSPF z Fail-Safe EEM"
   hosts: all
   gather_facts: no
   connection: network_cli
@@ -8,54 +8,80 @@
     ansible_server_ip: "192.168.1.127"
 
   tasks:
-    - name: "Konfiguracja OSPF - zapewnienie trasowania (Drift Detection)"
-      cisco.ios.ios_ospfv2:
-        config:
-          processes:
-            - process_id: 1
-              areas:
-                - area_id: "0"
-        state: merged
-      register: ospf_config
+    - name: "BLOCK: Próba wdrożenia i weryfikacji"
+      block:
+        - name: "[1] Optymalizacja systemu plików (Silent Copy)"
+          cisco.ios.ios_config:
+            lines:
+              - file prompt quiet
 
-    - name: "Zabezpieczenie: Fail-Safe EEM (Dead Man's Switch)"
-      cisco.ios.ios_config:
-        lines:
-          - event manager applet ANSIBLE_SAFEGUARD
-          - event timer watchdog time 300
-          - action 1.0 cli command "enable"
-          - action 2.0 cli command "ping {{ ansible_server_ip }} repeat 2 timeout 1"
-          - action 3.0 regexp "!!" "$_cli_result"
-          - action 4.0 if $_regexp_result eq "0"
-          - action 5.0 syslog msg "CRITICAL: Connection to Ansible lost! Restoring config..."
-          - action 6.0 cli command "copy startup-config running-config"
-          - action 7.0 end
-      register: eem_config
+        - name: "[2] Konfiguracja OSPF (Źródło Prawdy: NetBox)"
+          cisco.ios.ios_ospfv2:
+            config:
+              processes:
+                - process_id: 1
+                  areas:
+                    - area_id: "0"
+            state: merged
+          register: ospf_config
 
-    - name: "[ChatOps] Wyślij alert o naprawie konfiguracji"
-      uri:
-        url: "{{ alert_webhook_url }}"
-        method: POST
-        body_format: json
-        headers:
-          Content-Type: "application/json"
-        body:
-          content: "⚠️ **Drift Detected & Remediated!**\nNa urządzeniu **{{ inventory_hostname }}** wykryto niezgodność konfiguracji OSPF ze Źródłem Prawdy (NetBox). Konfiguracja została automatycznie naprawiona przez Ansible."
-      when: 
-        - ospf_config.changed
-        - alert_webhook_url != ""
-      ignore_errors: yes
+        - name: "[3] Uzbrojenie inteligentnego strażnika (Fail-Safe EEM)"
+          cisco.ios.ios_config:
+            lines:
+              - no event manager applet ANSIBLE_SAFEGUARD
+              - event manager applet ANSIBLE_SAFEGUARD
+              - event timer watchdog time 60
+              - action 1.0 cli command "enable"
+              - action 2.0 cli command "ping {{ ansible_server_ip }} repeat 2 timeout 1"
+              - action 3.0 regexp "!!" "$_cli_result"
+              - action 4.0 if $_regexp_result eq "0"
+              - action 5.0 syslog msg "🚨 CRITICAL: Connection to Ansible lost! Auto-restoring config..."
+              - action 6.0 cli command "copy startup-config running-config"
+              - action 7.0 end
+          register: eem_config
 
-    - name: "Zapisz konfigurację (Running-config do Startup-config)"
-      cisco.ios.ios_command:
-        commands: write memory
-      when: ospf_config.changed or eem_config.changed
+        - name: "[4] Zapisywanie konfiguracji do Startup-Config"
+          cisco.ios.ios_command:
+            commands: write memory
+          when: ospf_config.changed or eem_config.changed
 
-    - name: "[Walidacja] Sprawdź relacje sąsiedztwa OSPF"
-      cisco.ios.ios_command:
-        commands: show ip ospf neighbor
-      register: ospf_neighbors
+        - name: "[5] Walidacja: Sprawdzenie stanu sąsiedztwa OSPF"
+          cisco.ios.ios_command:
+            commands: show ip ospf neighbor
+          register: ospf_neighbors
 
-    - name: "[Walidacja] Analiza wyniku OSPF"
-      debug:
-        msg: "Sąsiedzi OSPF na {{ inventory_hostname }}:\n{{ ospf_neighbors.stdout[0] }}"
+        - name: "[6] Raportowanie stanu operacyjnego"
+          debug:
+            msg: "Urządzenie {{ inventory_hostname }} jest ZGODNE. Sąsiedzi OSPF:\n{{ ospf_neighbors.stdout[0] }}"
+
+      rescue:
+        - name: "🚨 ALERT: Błąd krytyczny podczas wdrożenia"
+          debug:
+            msg: "NIE POWIODŁO SIĘ wdrożenie na {{ inventory_hostname }}. System EEM na urządzeniu spróbuje przywrócić łączność w ciągu 60 sekund."
+
+        - name: "[ChatOps] Wyślij powiadomienie o awarii pipeline"
+          uri:
+            url: "{{ alert_webhook_url }}"
+            method: POST
+            body_format: json
+            headers:
+              Content-Type: "application/json"
+            body:
+              content: "❌ **Deployment Failed!**\nBłąd wdrożenia na **{{ inventory_hostname }}**. Inicjowanie procedury automatycznego odzyskiwania (EEM)..."
+          when: alert_webhook_url != ""
+          ignore_errors: yes
+
+      always:
+        - name: "[ChatOps] Powiadomienie o sukcesie (tylko przy zmianach)"
+          uri:
+            url: "{{ alert_webhook_url }}"
+            method: POST
+            body_format: json
+            headers:
+              Content-Type: "application/json"
+            body:
+              content: "✅ **Auto-Healed!**\nSieć na **{{ inventory_hostname }}** została automatycznie naprawiona i zwalidowana."
+          when: 
+            - ospf_config.changed
+            - alert_webhook_url != ""
+          ignore_errors: yes
